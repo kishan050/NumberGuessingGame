@@ -1,160 +1,87 @@
-import java.util.Scanner;
-import java.util.Random;
+import java.util.*;
+public class NumberGuessingGame {
+    static ArrayList<Integer> scoreBoard = new ArrayList<Integer>();
+    public static void main(String[] args) {
+        NumberGuessingGame methodChange = new NumberGuessingGame();
+        methodChange.menu(scoreBoard);
+    }
+    public void menu(ArrayList<Integer> scoreBoard) {
+        NumberGuessingGame methodChange = new NumberGuessingGame();
+        Scanner input = new Scanner(System.in);
+        System.out.println("--------------------");
+        System.out.println("Welcome to the number guessing game");
+        System.out.println("1) Play the Game");
+        System.out.println("2) Score Board");
+        System.out.println("3) Exit the game");
+        System.out.println("--------------------");
+        try {
+            System.out.print("What action would you like to do from the above actions? ");
+            int menuOption = input.nextInt();
+            switch (menuOption) {
+                case 1:
+                    System.out.print("\n"+"What would you like the range of the numbers to be? ");
+                    int numberRange = input.nextInt();
+                    int randomNumber = methodChange.randomNumber(numberRange);
+                    methodChange.guessNumber(randomNumber);
+                    break;
+                case 2:
+                    methodChange.displayScoreBoard();
+                    break;
+                case 3:
+                    System.out.println("\n"+"Thanks for playing the game!");
+                    System.exit(1);
+                    break;
+                default:
+                    throw new InputMismatchException("Invalid number entry.Could you please Try again later");
+            }
+        }catch(InputMismatchException e){
+            System.err.println("\n"+e.getMessage() +"\n");
+            menu(scoreBoard);
+        }
+    }
+    public int randomNumber(int numberRange) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(numberRange) + 1;
+        return randomNumber;
+    }
+    public void guessNumber(int randomNumber) {
+        Scanner input = new Scanner(System.in);
+        int userGuess;
+        int guess = 0;
+        do {
+            System.out.print("Enter your guess number: ");
+            userGuess = input.nextInt();
+            guess++;
+            if (userGuess > randomNumber) {
+                System.out.println("Lower");
+            } else if (userGuess < randomNumber) {
+                System.out.println("Higher");
+            }
+        } while (randomNumber != userGuess);
+        System.out.println(" ");
+        if (guess == 1) {
+            System.out.println("You answered number is right in " + guess + " try!");
+        } else {
+            System.out.println("You answered number is right in " + guess + " tries!");
+        }
+        scoreBoard.add(guess);
+        System.out.println(" ");
 
-// Game class
-class Game {
-	
-	int systemInput;
-	int userInput;
-	int noOfGuesses = 0;
-	
-	// generating random number in default constructor
-	Game() {
-		Random random = new Random();
-		this.systemInput = random.nextInt(100) + 1;
-	}
-	
-	
-	// method to take user guesses
-	public boolean takeUserInput() {
-		if ( noOfGuesses < 10 ) {
-			System.out.print("Guess the number : ");
-			this.userInput = GuessTheNumber.takeIntegerInput(100);
-			noOfGuesses++;
-			return false;
-		}
-		else {
-			System.out.println("Number of attempts finished...Better luck next time\n");
-			return true;
-		}
-	}
-	
-	
-	//method to check user guess status
-	public boolean isCorrectGuess() {
-		
-		if ( systemInput == userInput ) {
-			System.out.println("Congratulations, you guess the number " + systemInput +
-			" in " + noOfGuesses + " guesses");
-			switch(noOfGuesses) {
-				case 1:
-				System.out.println("Your score is 100");
-				break;
-				case 2:
-				System.out.println("Your score is 90");
-				break;
-				case 3:
-				System.out.println("Your score is 80");
-				break;
-				case 4:
-				System.out.println("Your score is 70");
-				break;
-				case 5:
-				System.out.println("Your score is 60");
-				break;
-				case 6:
-				System.out.println("Your score is 50");
-				break;
-				case 7:
-				System.out.println("Your score is 40");
-				break;
-				case 8:
-				System.out.println("Your score is 30");
-				break;
-				case 9:
-				System.out.println("Your score is 20");
-				break;
-				case 10:
-				System.out.println("Your score is 10");
-				break;
-			}
-			System.out.println();
-			return true;
-		}
-		else if ( noOfGuesses < 10 && userInput > systemInput ) {
-			if ( userInput - systemInput > 10 ) {
-				System.out.println("Too High");
-			}
-			else {
-				System.out.println("Little High");
-			}
-		}
-		else if ( noOfGuesses < 10 && userInput < systemInput ) {
-			if ( systemInput - userInput > 10 ) {
-				System.out.println("Too low");
-			}
-			else {
-				System.out.println("Little low");
-			}
-		}
-		return false;
-	}
+        menu(scoreBoard);
+    }
+    public void displayScoreBoard() {
+        System.out.println("--------------------");
+        System.out.println("Score Board");
+        System.out.println("--------------------");
+        System.out.println("Your fastest games today out of all tries is: " +"\n");
+        Collections.sort(scoreBoard);
+        for (Integer scores : scoreBoard) {
+            System.out.println("Finished the number game in " + scores + " tries");
+        }
+        System.out.println(" ");
+        menu(scoreBoard);
+    }
 }
-
-// main class
-public class GuessTheNumber {
 	
-	// static method to take integer input without any limit and exception error
-	// exception handling and input limit handling
-	public static int takeIntegerInput(int limit) {
-		int input = 0;
-		boolean flag = false;
-		
-		while ( !flag ) {
-			try {
-				Scanner sc = new Scanner(System.in);
-				input = sc.nextInt();
-				flag = true;
-				
-				if ( flag && input > limit || input < 1 ) {
-					System.out.println("Choose the number between 1 to " + limit);
-					flag = false;
-				}
-			}
-			catch ( Exception e ) {
-				System.out.println("Enter only integer value");
-				flag = false;
-			}
-		};
-		return input;
-	}
 	
-	// main method
-	public static void main(String[] args) {
-		
-		// input for start the game
-		System.out.println("1. Start the Game \n2. Exit");
-		System.out.print("Enter your choice : ");
-		int choice = takeIntegerInput(2);
-		int nextRound = 1;
-		int noOfRound = 0;
-		
-		if ( choice == 1 ) {
-			
-			// to check next round is there or not
-			while ( nextRound == 1 ) {
-				// creating object of Game class
-				Game game = new Game();
-				boolean isMatched = false;
-				boolean isLimitCross = false;
-				System.out.println("\nRound " + ++noOfRound + " starts...");
-				
-				// to check correct guess and limit cross
-				while ( !isMatched && !isLimitCross) {
-					isLimitCross = game.takeUserInput();
-					isMatched = game.isCorrectGuess();
-				}
-				// input for next round
-				System.out.println("1. Next Round \n2. Exit");
-				System.out.println("Enter your choice : ");
-				nextRound = takeIntegerInput(2);
-				if ( nextRound != 1 ) {
-					System.exit(0);
-				}
-			}
-		}
-		else {
-			System.exit(0);
-		}
-	}
-}
+	
